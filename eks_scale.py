@@ -8,7 +8,7 @@ def usage(err):
 def help():
 
     usage( "Scaling EKS Worker node by bongbk, email: ngocbongbk@gmail.com " + VERSION + "\n"+
-              "Standard use:\t" + sys.argv[1] + " -O accessKey -W secretKey -r eu-west-1 -k eks-cluster -w nodename -n number_of_worker")
+              "Standard use:\t" + sys.argv[1] + " -O accessKey -W secretKey -r eu-west-1 -k eks-cluster -w nodename -n number_of_worker -m max_node")
 
 def main():
     def check(status):
@@ -27,8 +27,9 @@ def main():
     aws_secret_key = None
     node_name = None
     number_node = None
+    max_size = None
     try:
-        opts, args = getopt.getopt(sys.argv[1:], "O:W:r:k:w:n:h:",["aws-access-key=","aws-secret-key=","region_id=","eks_id=","node_name=","number_node=","help"])
+        opts, args = getopt.getopt(sys.argv[1:], "O:W:r:k:w:n:m:h:",["aws-access-key=","aws-secret-key=","region_id=","eks_id=","node_name=","number_node=","max_size","help"])
     except getopt.GetoptError as err:
         usage(str(err))
     for opt, arg in opts:
@@ -44,6 +45,8 @@ def main():
             node_name = arg
         elif opt in ('-n', '--number_node'):
             number_node = arg
+        elif opt in ('-n', '--max_size'):
+            max_size = arg
         elif opt in ('-h', '--help'):
             help()
 
@@ -57,7 +60,7 @@ def main():
         nodegroupName=node_name,
         scalingConfig={
             'minSize': int(number_node),
-            'maxSize': int(number_node),
+            'maxSize': int(max_size),
             'desiredSize': int(number_node)
         }
     )
